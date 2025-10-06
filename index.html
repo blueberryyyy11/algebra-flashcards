@@ -267,6 +267,43 @@
             background: #643a8a;
         }
 
+        .review-btn {
+            background: #e53e3e;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .review-btn:hover {
+            background: #c53030;
+        }
+
+        .review-mode .card-container {
+            cursor: default;
+        }
+
+        .review-mode .flip-indicator {
+            display: none;
+        }
+
+        .review-controls {
+            display: none;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .review-mode .review-controls {
+            display: flex;
+        }
+
+        .review-mode .navigation {
+            display: none;
+        }
+
         /* Mobile responsive styles */
         @media (max-width: 768px) {
             .card-container {
@@ -375,6 +412,7 @@
             
             <button class="shuffle-btn" onclick="shuffleCards()">🔀 Խառնել քարտերը</button>
         </div>
+            <button class="review-btn" onclick="toggleReviewMode()">📖 Դիտել բոլոր քարտերը</button>
         
         <div class="progress-bar">
             <div class="progress-fill" id="progressFill"></div>
@@ -407,6 +445,11 @@
         <div class="navigation">
             <button class="btn-secondary" onclick="prevCard()">← Նախորդ</button>
             <button class="btn-primary" onclick="nextCard()">Հաջորդ →</button>
+        </div>
+
+        <div class="review-controls">
+            <button class="btn-secondary" onclick="prevReviewCard()">← Նախորդ քարտ</button>
+            <button class="btn-primary" onclick="nextReviewCard()">Հաջորդ քարտ →</button>
         </div>
     </div>
 
@@ -1032,6 +1075,8 @@
         let currentCardIndex = 0;
         let isFlipped = false;
         let filteredCards = [...flashcards];
+        let isReviewMode = false;
+        let reviewCardIndex = 0;
 
         function initApp() {
             updateCard();
@@ -1058,6 +1103,7 @@
         }
 
         function flipCard() {
+            if (isReviewMode) return; // Prevent flipping in review mode
             isFlipped = !isFlipped;
             updateCard();
         }
@@ -1096,6 +1142,58 @@
             const progress = ((currentCardIndex + 1) / filteredCards.length) * 100;
             document.getElementById('progressFill').style.width = `${progress}%`;
             updateStats();
+        }
+
+        function toggleReviewMode() {
+            isReviewMode = !isReviewMode;
+            reviewCardIndex = 0;
+            
+            if (isReviewMode) {
+                document.body.classList.add('review-mode');
+                document.querySelector('.review-btn').textContent = '❌ Փակել ցուցադրումը';
+                showReviewCard();
+            } else {
+                document.body.classList.remove('review-mode');
+                document.querySelector('.review-btn').textContent = '📖 Դիտել բոլոր քարտերը';
+                updateCard();
+            }
+        }
+
+        function showReviewCard() {
+            if (!isReviewMode || reviewCardIndex >= filteredCards.length) {
+                toggleReviewMode();
+                return;
+            }
+            
+            const card = filteredCards[reviewCardIndex];
+            document.getElementById('cardNumber').textContent = `Քարտ ${reviewCardIndex + 1}/${filteredCards.length}`;
+            document.getElementById('cardType').textContent = card.type;
+            document.getElementById('cardContent').innerHTML = `
+                <div class="card-front">${card.front}</div>
+                <div class="card-back" style="margin-top: 20px; padding-top: 20px; border-top: 2px solid #eee;">${card.back}</div>
+            `;
+            
+            document.getElementById('currentCard').textContent = reviewCardIndex + 1;
+            updateProgressBar();
+        }
+
+        function nextReviewCard() {
+            if (reviewCardIndex < filteredCards.length - 1) {
+                reviewCardIndex++;
+                showReviewCard();
+            }
+        }
+
+        function prevReviewCard() {
+            if (reviewCardIndex > 0) {
+                reviewCardIndex--;
+                showReviewCard();
+            }
+        }
+
+        function goToReviewCard(index) {
+            reviewCardIndex = index;
+            showReviewCard();
         }
 
         // Initialize the app when page loads
