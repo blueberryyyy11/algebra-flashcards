@@ -3,45 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <!-- Add these meta tags -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-    <!-- Add to your existing CSS for better mobile touch -->
-    <style>
-        @media (max-width: 768px) {
-            .card-container {
-                min-height: 60vh;
-                padding: 30px 20px;
-            }
-            
-            .card-content {
-                font-size: 1em;
-                min-height: 40vh;
-            }
-            
-            button {
-                padding: 12px 20px;
-                font-size: 0.9em;
-            }
-            
-            .checkbox-group {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Better touch targets for mobile */
-        button, .checkbox-item {
-            min-height: 44px; /* Apple's recommended touch target size */
-        }
-        
-        .card-container {
-            -webkit-tap-highlight-color: transparent; /* Remove blue tap highlight on iOS */
-        }
-    </style>
-    <title>Algebra Flashcards</title>
+    <title>Algebra Flashcards - Գծային Տարածություններ</title>
     <style>
         * {
             margin: 0;
@@ -304,6 +266,39 @@
         .shuffle-btn:hover {
             background: #643a8a;
         }
+
+        /* Mobile responsive styles */
+        @media (max-width: 768px) {
+            .card-container {
+                padding: 30px 20px;
+                min-height: 400px;
+            }
+            
+            .card-content {
+                min-height: 250px;
+                font-size: 1em;
+            }
+            
+            button {
+                padding: 12px 20px;
+                font-size: 0.9em;
+            }
+            
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.2em;
+            padding: 50px;
+        }
     </style>
 </head>
 <body>
@@ -403,7 +398,9 @@
         <div class="card-container" onclick="flipCard()">
             <div class="card-number" id="cardNumber"></div>
             <div class="card-type" id="cardType"></div>
-            <div class="card-content" id="cardContent"></div>
+            <div class="card-content" id="cardContent">
+                <div class="loading">Բեռնվում է...</div>
+            </div>
             <div class="flip-indicator">👆 Սեղմեք շրջելու համար</div>
         </div>
         
@@ -415,7 +412,6 @@
 
     <script>
         const flashcards = [
-            // Գծային տարածություններ - Սահմանումներ
             {
                 topic: "Գծային տարածություններ",
                 type: "Հարց-Պատասխան",
@@ -697,8 +693,8 @@
             updateStats();
         }
 
-        // Initialize the app
-        initApp();
+        // Initialize the app when page loads
+        window.addEventListener('load', initApp);
     </script>
 </body>
 </html>
