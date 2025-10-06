@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="hy">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Add these meta tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Add to your existing CSS for better mobile touch -->
+    <style>
+        @media (max-width: 768px) {
+            .card-container {
+                min-height: 60vh;
+                padding: 30px 20px;
+            }
+            
+            .card-content {
+                font-size: 1em;
+                min-height: 40vh;
+            }
+            
+            button {
+                padding: 12px 20px;
+                font-size: 0.9em;
+            }
+            
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Better touch targets for mobile */
+        button, .checkbox-item {
+            min-height: 44px; /* Apple's recommended touch target size */
+        }
+        
+        .card-container {
+            -webkit-tap-highlight-color: transparent; /* Remove blue tap highlight on iOS */
+        }
+    </style>
+    <title>Algebra Flashcards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .controls {
+            background: rgba(255,255,255,0.95);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .filter-section {
+            margin-bottom: 15px;
+        }
+        
+        .filter-section label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #667eea;
+        }
+        
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .checkbox-item input {
+            width: 18px;
+            height: 18px;
+        }
+        
+        .stats {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .stat-item {
+            text-align: center;
+            color: white;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+        
+        .card-container {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            min-height: 450px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s;
+            perspective: 1000px;
+        }
+        
+        .card-container:active {
+            transform: scale(0.98);
+        }
+        
+        .card-type {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #667eea;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        
+        .card-number {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #999;
+            font-weight: bold;
+        }
+        
+        .card-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 300px;
+            font-size: 1.1em;
+            line-height: 1.8;
+        }
+        
+        .card-front {
+            color: #333;
+        }
+        
+        .card-back {
+            color: #2c3e50;
+        }
+        
+        .cloze-text {
+            background: #fff3cd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 15px;
+        }
+        
+        button {
+            padding: 15px 30px;
+            font-size: 1em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+            flex: 1;
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+        
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #38a169;
+        }
+        
+        .flip-indicator {
+            text-align: center;
+            color: #999;
+            font-size: 0.9em;
+            margin-top: 20px;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: white;
+            transition: width 0.3s;
+        }
+        
+        .math {
+            font-family: 'Times New Roman', serif;
+            font-style: italic;
+        }
+        
+        .definition-box {
+            background: #e8f4f8;
+            padding: 20px;
+            border-left: 4px solid #3498db;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        
+        .theorem-box {
+            background: #fff5e6;
+            padding: 20px;
+            border-left: 4px solid #f39c12;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        
+        .example-box {
+            background: #e8f8e8;
+            padding: 20px;
+            border-left: 4px solid #27ae60;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        
+        .shuffle-btn {
+            background: #764ba2;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .shuffle-btn:hover {
+            background: #643a8a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Գծային տարածություններ</h1>
+            <p>Հանրահաշիվ - Flashcards</p>
+        </div>
+        
+        <div class="controls">
+            <div class="filter-section">
+                <label>Թեմաներ:</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="topic1" checked>
+                        <label for="topic1">Գծային տարածություններ</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="topic2" checked>
+                        <label for="topic2">Հատկություններ</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="topic3" checked>
+                        <label for="topic3">Գծային զուգակցություն</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="topic4" checked>
+                        <label for="topic4">Անկախություն/Կախվածություն</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="topic5" checked>
+                        <label for="topic5">Ենթատարածություններ</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="topic6" checked>
+                        <label for="topic6">Գծային թաղանթ</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="topic7" checked>
+                        <label for="topic7">Չափողականություն</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="topic8" checked>
+                        <label for="topic8">Հենք և Ռանգ</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="topic9" checked>
+                        <label for="topic9">Արտապատկերումներ</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="filter-section">
+                <label>Քարտի տեսակ:</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="typeQA" checked>
+                        <label for="typeQA">Հարց-Պատասխան</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="typeCloze" checked>
+                        <label for="typeCloze">Լրացնել բացը</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="typeProof" checked>
+                        <label for="typeProof">Ապացույցներ</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="typeExample" checked>
+                        <label for="typeExample">Օրինակներ</label>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="shuffle-btn" onclick="shuffleCards()">🔀 Խառնել քարտերը</button>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-label">Ընթացիկ քարտ</div>
+                <div class="stat-value" id="currentCard">1</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Ընդամենը</div>
+                <div class="stat-value" id="totalCards">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Առաջընթաց</div>
+                <div class="stat-value" id="progress">0%</div>
+            </div>
+        </div>
+        
+        <div class="card-container" onclick="flipCard()">
+            <div class="card-number" id="cardNumber"></div>
+            <div class="card-type" id="cardType"></div>
+            <div class="card-content" id="cardContent"></div>
+            <div class="flip-indicator">👆 Սեղմեք շրջելու համար</div>
+        </div>
+        
+        <div class="navigation">
+            <button class="btn-secondary" onclick="prevCard()">← Նախորդ</button>
+            <button class="btn-primary" onclick="nextCard()">Հաջորդ →</button>
+        </div>
+    </div>
+
+    <script>
+        const flashcards = [
+            // Գծային տարածություններ - Սահմանումներ
+            {
+                topic: "Գծային տարածություններ",
+                type: "Հարց-Պատասխան",
+                front: "Ի՞նչ է գծային տարածությունը:",
+                back: "<div class='definition-box'><strong>Սահմանում:</strong> (V, +, ·) եռյակը կոչվում է գծային տարածություն, եթե բավարարված են 8 աքսիոմները:<br><br>1. Գումարումը զուգորդական է<br>2. Գումարումը տեղափոխական է<br>3. Գումարումն օժտված է չեզոք տարրով<br>4. Գումարումն օժտված է հակադիրով<br>5. (αβ)v = α(βv)<br>6. (α+β)v = αv + βv<br>7. α(v₁+v₂) = αv₁ + αv₂<br>8. 1·v = v (ունիտարություն)</div>",
+                page: 182
+            },
+            {
+                topic: "Գծային տարածություններ",
+                type: "Լրացնել բացը",
+                front: "Գծային տարածության տարրերին կանվանում են <span class='cloze-text'>___</span>",
+                back: "Գծային տարածության տարրերին կանվանում են <span class='cloze-text'>վեկտորներ</span>",
+                page: 184
+            },
+            {
+                topic: "Հատկություններ",
+                type: "Հարց-Պատասխան",
+                front: "Արդյո՞ք գծային տարածությունում չեզոք տարրը միակն է:",
+                back: "<div class='theorem-box'><strong>Հատկություն 8.1.1:</strong> Այո, գծային տարածությունում գումարման նկատմամբ չեզոք տարրը միակն է։<br><br>∃!θ ∈ V s.t. ∀a ∈ V տարրի համար a + θ = a</div>",
+                page: 187
+            },
+            {
+                topic: "Հատկություններ",
+                type: "Ապացույցներ",
+                front: "Ապացուցել, որ ∀a ∈ V տարրի համար 0·a = θ",
+                back: "<div class='theorem-box'><strong>Ապացույց:</strong><br>0·a = (0+0)a = 0·a + 0·a<br><br>Այսինքն 0·a = 0·a + 0·a<br><br>Օգտվելով այն հատկությունից, որ եթե a + a = a, ապա a = θ, կարող ենք ասել 0·a = θ</div>",
+                page: 189
+            },
+            {
+                topic: "Հատկություններ",
+                type: "Հարց-Պատասխան",
+                front: "Ինչ կլինի, եթե α·a = θ?",
+                back: "<div class='theorem-box'><strong>Հատկություն 8.1.7:</strong> Եթե α·a = θ, ապա կամ α = 0, կամ a = θ</div>",
+                page: 190
+            },
+            {
+                topic: "Գծային զուգակցություն",
+                type: "Հարց-Պատասխան",
+                front: "Ի՞նչ է գծային զուգակցությունը:",
+                back: "<div class='definition-box'><strong>Սահմանում 8.2.1:</strong> Յուրաքանչյուր α₁v₁ + α₂v₂ + ··· + αₙvₙ տեսքի արտահայտություն կոչվում է v₁,...,vₙ վեկտորների համակարգի գծային զուգակցություն։<br><br>α₁,...,αₙ-ը թվերը կոչվում են այդ զուգակցության գործակիցներ։</div>",
+                page: 191
+            },
+            {
+                topic: "Գծային զուգակցություն",
+                type: "Լրացնել բացը",
+                front: "Գծային զուգակցությունը կոչվում է <span class='cloze-text'>___</span>, եթե բոլոր գործակիցները զրո են",
+                back: "Գծային զուգակցությունը կոչվում է <span class='cloze-text'>տրիվյալ</span>, եթե բոլոր գործակիցները զրո են",
+                page: 191
+            },
+            {
+                topic: "Անկախություն/Կախվածություն",
+                type: "Հարց-Պատասխան",
+                front: "Ե՞րբ է վեկտորների համակարգը գծորեն անկախ:",
+                back: "<div class='definition-box'><strong>Սահմանում 8.3.1:</strong> Վեկտորների համակարգը v₁,v₂,...,vₙ կոչվում է գծորեն անկախ, եթե<br><br>α₁v₁ + α₂v₂ + ··· + αₙvₙ = θ<br><br>հավասարությունը տեղի ունի այն և միայն այն դեպքում, երբ αᵢ = 0, i = 1...n</div>",
+                page: 193
+            },
+            {
+                topic: "Անկախություն/Կախվածություն",
+                type: "Հարց-Պատասխան",
+                front: "Ե՞րբ է վեկտորների համակարգը գծորեն կախված:",
+                back: "<div class='definition-box'><strong>Սահմանում 8.3.2:</strong> Վեկտորների համակարգը v₁,v₂,...,vₙ կոչվում է գծորեն կախված, եթե<br><br>α₁v₁ + α₂v₂ + ··· + αₙvₙ = θ<br><br>այն դեպքում, երբ գծային զուգակցության գործակիցներից ոչ բոլորն են զրոյական։</div>",
+                page: 193
+            },
+            {
+                topic: "Անկախություն/Կախվածություն",
+                type: "Ապացույցներ",
+                front: "Ե՞րբ է (n≥2) վեկտորների համակարգը գծորեն կախված:",
+                back: "<div class='theorem-box'><strong>Թեորեմ 8.3.1:</strong> Վեկտորների v₁,v₂,...,vₙ համակարգը (n≥2) գծորեն կախված է այն և միայն այն դեպքում, երբ այդ վեկտորներից մեկը գծորեն վերլուծվում է նույն համակարգի մյուս վեկտորների միջոցով։</div>",
+                page: 198
+            },
+            {
+                topic: "Անկախություն/Կախվածություն",
+                type: "Օրինակներ",
+                front: "Օրինակ: Ստուգել e₁=(1,0,0), e₂=(0,1,0), e₃=(0,0,1) համակարգի գծորեն անկախությունը",
+                back: "<div class='example-box'>ae₁ + be₂ + ce₃ = θ<br>a(1,0,0) + b(0,1,0) + c(0,0,1) = (0,0,0)<br>(a,b,c) = (0,0,0)<br><br>Ստացվեց a=b=c=0<br><br><strong>Եզրակացություն:</strong> Համակարգը գծորեն անկախ է։</div>",
+                page: 193
+            },
+            {
+                topic: "Ենթատարածություններ",
+                type: "Հարց-Պատասխան",
+                front: "Ի՞նչ է գծային ենթատարածությունը:",
+                back: "<div class='definition-box'><strong>Սահմանում 8.4.1:</strong> V գծային տարածության ոչ դատարկ U⊂V ենթաբազմությունը կոչվում է այդ տարածության ենթատարածություն, եթե:<br><br>1. ∀u₁,u₂ ∈ U տարրերի համար u₁+u₂ ∈ U<br>2. ∀u ∈ U տարրի և ∀α ∈ R թվի համար αu ∈ U</div>",
+                page: 200
+            },
+            {
+                topic: "Ենթատարածություններ",
+                type: "Լրացնել բացը",
+                front: "Յուրաքանչյուր գծային տարածություն ունի առնվազն <span class='cloze-text'>___</span> ենթատարածություն",
+                back: "Յուրաքանչյուր գծային տարածություն ունի առնվազն <span class='cloze-text'>երկու</span> ենթատարածություն (V-ն ինքը և {θ})",
+                page: 201
+            },
+            {
+                topic: "Գծային թաղանթ",
+                type: "Հարց-Պատասխան",
+                front: "Ի՞նչ է վեկտորների համակարգի գծային թաղանթը:",
+                back: "<div class='definition-box'><strong>Սահմանում 8.5.1:</strong> Վեկտորների v₁,...,vₙ համակարգի բոլոր հնարավոր գծային զուգակցությունների բազմությունն անվանում են այդ համակարգի գծային թաղանթ և նշանակվում ⟨v₁,...,vₙ⟩-ով։<br><br>⟨v₁,...,vₙ⟩ = {α₁v₁ + α₂v₂ + ··· + αₙvₙ | αᵢ ∈ R, i=1...n}</div>",
+                page: 202
+            },
+            {
+                topic: "Գծային թաղանթ",
+                type: "Ապացույցներ",
+                front: "Ապացուցել, որ վեկտորների կամայական համակարգի գծային թաղանթը գծային ենթատարածություն է",
+                back: "<div class='theorem-box'><strong>Պնդում 8.5.1:</strong><br>Եթե v₁,v₂ ∈ ⟨v₁,...,vₙ⟩, ապա:<br>v₁+v₂ = (α₁+β₁)v₁ + ··· + (αₙ+βₙ)vₙ ∈ ⟨v₁,...,vₙ⟩<br><br>Եթե v ∈ ⟨v₁,...,vₙ⟩, ապա:<br>αv = (αα₁)v₁ + ··· + (ααₙ)vₙ ∈ ⟨v₁,...,vₙ⟩<br><br>Հետևաբար երկու պայմանները բավարարված են։</div>",
+                page: 203
+            },
+            {
+                topic: "Գծային թաղանթ",
+                type: "Հարց-Պատասխան",
+                front: "Եթե vₙ₊₁ ∈ ⟨v₁,...,vₙ⟩, ապա ի՞նչ կլինի ⟨v₁,...,vₙ,vₙ₊₁⟩-ը:",
+                back: "<div class='theorem-box'><strong>Թեորեմ 8.5.1:</strong> Եթե vₙ₊₁ ∈ ⟨v₁,...,vₙ⟩, ապա<br><br>⟨v₁,...,vₙ,vₙ₊₁⟩ = ⟨v₁,...,vₙ⟩<br><br>Այսինքն գծային թաղանթը չի փոխվում։</div>",
+                page: 204
+            },
+            {
+                topic: "Չափողականություն",
+                type: "Հարց-Պատասխան",
+                front: "Ե՞րբ է գծային տարածությունը վերջավոր չափանի:",
+                back: "<div class='definition-box'><strong>Սահմանում 8.6.1:</strong> V գծային տարածությունը կոչվում է վերջավոր չափանի, եթե<br><br>∃v₁,v₂,...,vₙ ∈ V, որ ⟨v₁,...,vₙ⟩ = V<br><br>Այսինքն գոյություն ունի վերջավոր քանակությամբ վեկտորների այնպիսի համակարգ, որի գծային թաղանթը համընկնում է V-ի հետ։</div>",
+                page: 206
+            },
+            {
+                topic: "Չափողականություն",
+                type: "Հարց-Պատասխան",
+                front: "Ի՞նչ է գծային տարածության հենքը:",
+                back: "<div class='definition-box'><strong>Սահմանում 8.6.3:</strong> Վեկտորների v₁,...,vₙ համակարգը կոչվում է V գծային տարածության հենք (բազիս), եթե:<br><br>1. v₁,...,vₙ-ը V-ի լրիվ համակարգ է (⟨v₁,...,vₙ⟩=V)<br>2. v₁,...,vₙ-ը գծորեն անկախ համակարգ է</div>",
+                page: 207
+            },
+            {
+                topic: "Չափողականություն",
+                type: "Ապացույցներ",
+                front: "Ապացուցել, որ տվյալ տարածության երկու տարբեր հենք ունեն նույն քանակով վեկտորներ",
+                back: "<div class='theorem-box'><strong>Թեորեմ 8.6.1:</strong><br>Եթե v₁,...,vₖ և v'₁,...,v'ₛ-ը V-ի երկու հենք են, ապա:<br><br>v₁,...,vₖ ∈ ⟨v'₁,...,v'ₛ⟩<br>v'₁,...,v'ₛ ∈ ⟨v₁,...,vₖ⟩<br><br>Օգտվելով հետևանքից՝ s = k</div>",
+                page: 207
+            },
+            {
+                topic: "Չափողականություն",
+                type: "Լրացնել բացը",
+                front: "Տվյալ V գծային տարածության որևէ հենքի վեկտորների քանակը կոչվում է այդ տարածության <span class='cloze-text'>___</span>",
+                back: "Տվյալ V գծային տարածության որևէ հենքի վեկտորների քանակը կոչվում է այդ տարածության <span class='cloze-text'>չափողականություն (dim V)</span>",
+                page: 208
+            },
+            {
+                topic: "Չափողականություն",
+                type: "Օրինակներ",
+                front: "Գտնել R² տարածության չափողականությունը",
+                back: "<div class='example-box'>Դիտարկենք v₁=(1,0) և v₂=(0,1) վեկտորները։<br><br>Դրանք գծորեն անկախ են և ∀x=(x₁,x₂) ∈ R² վեկտորը գրվում է x = x₁v₁ + x₂v₂ տեսքով։<br><br>Հետևաբար ⟨v₁,v₂⟩ = R² և dim R² = 2</div>",
+                page: 208
+            },
+            {
+                topic: "Հենք և Ռանգ",
+                type: "Հարց-Պատասխան",
+                front: "Ի՞նչ է վեկտորների համակարգի հենքը:",
+                back: "<div class='definition-box'><strong>Սահմանում 9.0.1:</strong> Վեկտորների (v₁,...,vₙ) համակարգի (vᵢ₁,...,vᵢₖ) ենթահամակարգը կոչվում է (v₁,...,vₙ) համակարգի հենք, եթե այն բավարարում է հետևյալ պայմաններին:<br><br>• vᵢ₁,...,vᵢₖ համակարգը գծորեն անկախ է<br>• vᵢ₁,...,vᵢₖ,vⱼ համակարգը գծորեն կախված է ∀vⱼ ∈ (v₁,...,vₙ)</div>",
+                page: 215
+            },
+            {
+                topic: "Հենք և Ռանգ",
+                type: "Հարց-Պատասխան",
+                front: "Ի՞նչ է վեկտորների համակարգի ռանգը:",
+                back: "<div class='definition-box'><strong>Սահմանում 9.0.2:</strong> Վեկտորների համակարգի ռանգը հավասար է այդ համակարգի հենքի վեկտորների քանակին։<br><br>rank(v₁,...,vₙ) = dim(⟨v₁,...,vₙ⟩)</div>",
+                page: 216
+            },
+            {
+                topic: "Հենք և Ռանգ",
+                type: "Հարց-Պատասխան",
+                front: "Ի՞նչ կլինի, եթե համակարգի բոլոր վեկտորները զրոյական են:",
+                back: "<div class='theorem-box'><strong>Պնդում 9.0.1:</strong> Եթե համակարգի բոլոր վեկտորները զրոյական են, ապա այդ համակարգի ռանգը հավասար է 0-ի։</div>",
+                page: 217
+            },
+            {
+                topic: "Արտապատկերումներ",
+                type: "Հարց-Պատասխան",
+                front: "Ի՞նչ է գծային արտապատկերումը:",
+                back: "<div class='definition-box'><strong>Սահմանում 9.1.1:</strong> φ : V → W արտապատկերումը կոչվում է գծային արտապատկերում, եթե բավարարված են հետևյալ պայմանները:<br><br>1. φ(v₁+v₂) = φ(v₁) + φ(v₂) (ադիտիվություն)<br>2. φ(αv) = αφ(v) (համասեռություն)</div>",
+                page: 222
+            },
+            {
+                topic: "Արտապատկերումներ",
+                type: "Օրինակներ",
+                front: "Օրինակ: Ստուգել φ(x₁,x₂) = (x₁-x₂, x₁+2x₂) արտապատկերման գծայնությունը",
+                back: "<div class='example-box'>1. φ(x+y) = φ(x₁+y₁, x₂+y₂) = (x₁+y₁-x₂-y₂, x₁+y₁+2x₂+2y₂) = (x₁-x₂, x₁+2x₂) + (y₁-y₂, y₁+2y₂) = φ(x) + φ(y)<br><br>2. φ(αx) = φ(αx₁,αx₂) = (αx₁-αx₂, αx₁+2αx₂) = α(x₁-x₂, x₁+2x₂) = αφ(x)<br><br><strong>Եզրակացություն:</strong> φ-ն գծային է։</div>",
+                page: 223
+            },
+            {
+                topic: "Հատկություններ",
+                type: "Ապացույցներ",
+                front: "Ապացուցել, որ գծային արտապատկերման դեպքում φ(θᵥ) = θᵥ",
+                back: "<div class='theorem-box'><strong>Ապացույց:</strong><br>φ(θᵥ) = φ(θᵥ + θᵥ) = φ(θᵥ) + φ(θᵥ)<br><br>Այսինքն φ(θᵥ) = φ(θᵥ) + φ(θᵥ)<br><br>Ուստի φ(θᵥ) = θᵥ</div>",
+                page: 225
+            },
+            {
+                topic: "Հատկություններ",
+                type: "Ապացույցներ",
+                front: "Ապացուցել, որ երկու գծային արտապատկերումների արտադրյալը գծային է",
+                back: "<div class='theorem-box'><strong>Լեմմա 9.2.1:</strong><br>Եթե φ : V → W և ψ : W → U գծային են, ապա ψ∘φ : V → U ևս գծային է։<br><br>1. (ψ∘φ)(v₁+v₂) = ψ(φ(v₁+v₂)) = ψ(φ(v₁)+φ(v₂)) = ψ(φ(v₁)) + ψ(φ(v₂))<br>2. (ψ∘φ)(αv) = ψ(φ(αv)) = ψ(αφ(v)) = αψ(φ(v))</div>",
+                page: 226
+            },
+            {
+                topic: "Իզոմորֆիզմ",
+                type: "Հարց-Պատասխան",
+                front: "Ի՞նչ է իզոմորֆիզմը:",
+                back: "<div class='definition-box'><strong>Սահմանում 9.3.1:</strong> φ : V → W գծային արտապատկերումը կոչվում է իզոմորֆիզմ, եթե այն բիեկտիվ է։<br><br>V և W տարածությունները կոչվում են իզոմորֆ, եթե գոյություն ունի V → W իզոմորֆիզմ։</div>",
+                page: 227
+            },
+            {
+                topic: "Իզոմորֆիզմ",
+                type: "Հարց-Պատասխան",
+                front: "Ե՞րբ են երկու գծային տարածություններ իզոմորֆ:",
+                back: "<div class='theorem-box'><strong>Թեորեմ 9.3.1:</strong> Երկու գծային տարածություններ իզոմորֆ են այն և միայն այն դեպքում, երբ նրանց չափողականությունները հավասար են։<br><br>V ≅ W ⇔ dim V = dim W</div>",
+                page: 228
+            }
+        ];
+
+        let currentCardIndex = 0;
+        let isFlipped = false;
+        let filteredCards = [...flashcards];
+
+        function initApp() {
+            updateCard();
+            updateStats();
+            updateProgressBar();
+        }
+
+        function updateCard() {
+            const card = filteredCards[currentCardIndex];
+            if (!card) return;
+
+            document.getElementById('cardNumber').textContent = `Քարտ ${currentCardIndex + 1}/${filteredCards.length}`;
+            document.getElementById('cardType').textContent = card.type;
+            
+            const cardContent = document.getElementById('cardContent');
+            if (isFlipped) {
+                cardContent.innerHTML = `<div class="card-back">${card.back}</div>`;
+            } else {
+                cardContent.innerHTML = `<div class="card-front">${card.front}</div>`;
+            }
+            
+            document.getElementById('currentCard').textContent = currentCardIndex + 1;
+            document.getElementById('totalCards').textContent = filteredCards.length;
+        }
+
+        function flipCard() {
+            isFlipped = !isFlipped;
+            updateCard();
+        }
+
+        function nextCard() {
+            isFlipped = false;
+            currentCardIndex = (currentCardIndex + 1) % filteredCards.length;
+            updateCard();
+            updateProgressBar();
+        }
+
+        function prevCard() {
+            isFlipped = false;
+            currentCardIndex = (currentCardIndex - 1 + filteredCards.length) % filteredCards.length;
+            updateCard();
+            updateProgressBar();
+        }
+
+        function shuffleCards() {
+            isFlipped = false;
+            for (let i = filteredCards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [filteredCards[i], filteredCards[j]] = [filteredCards[j], filteredCards[i]];
+            }
+            currentCardIndex = 0;
+            updateCard();
+            updateProgressBar();
+        }
+
+        function updateStats() {
+            const progress = Math.round(((currentCardIndex + 1) / filteredCards.length) * 100);
+            document.getElementById('progress').textContent = `${progress}%`;
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentCardIndex + 1) / filteredCards.length) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            updateStats();
+        }
+
+        // Initialize the app
+        initApp();
+    </script>
+</body>
+</html>
