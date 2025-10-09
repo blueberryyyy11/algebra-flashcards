@@ -261,6 +261,7 @@
             cursor: pointer;
             font-weight: bold;
             margin-bottom: 15px;
+            margin-right: 15px; 
         }
         
         .shuffle-btn:hover {
@@ -276,21 +277,37 @@
             cursor: pointer;
             font-weight: bold;
             margin-bottom: 15px;
+            margin-right: 15px; 
         }
 
         .review-btn:hover {
             background: #c53030;
         }
 
-        .review-mode .card-container {
-            cursor: default;
+        .list-btn {
+            background: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .list-btn:hover {
+            background: #2980b9;
+        }
+
+        .review-mode .card-container, .list-mode .card-container {
+            display: none;
         }
 
         .review-mode .flip-indicator {
             display: none;
         }
 
-        .review-controls {
+        .review-controls, .list-controls {
             display: none;
             justify-content: space-between;
             margin-top: 20px;
@@ -300,9 +317,70 @@
             display: flex;
         }
 
-        .review-mode .navigation {
+        .review-mode .navigation, .list-mode .navigation {
             display: none;
         }
+
+        /* List View Styles */
+        .list-view-container {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            min-height: 450px;
+        }
+
+        .list-mode .list-view-container {
+            display: block;
+        }
+
+        .list-card {
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+            margin-bottom: 15px;
+        }
+
+        .list-card:last-child {
+            border-bottom: none;
+        }
+
+        .list-card-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #667eea;
+            font-size: 1.1em;
+        }
+
+        .list-card-type {
+            background: #eee;
+            color: #333;
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-size: 0.8em;
+            font-weight: normal;
+        }
+
+        .list-card-front, .list-card-back {
+            padding: 10px;
+            border-radius: 5px;
+            line-height: 1.6;
+        }
+
+        .list-card-front {
+            background: #f8f8f8;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 5px;
+        }
+
+        .list-card-back {
+            background: #f0f4ff;
+            border: 1px solid #c2d9ff;
+            color: #2c3e50;
+        }
+
 
         /* Mobile responsive styles */
         @media (max-width: 768px) {
@@ -341,7 +419,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>📚 Գծային տարածություններ</h1>
+            <h1>Գծային տարածություններ</h1>
             <p>Հանրահաշիվ - Flashcards</p>
         </div>
         
@@ -410,9 +488,10 @@
                 </div>
             </div>
             
-            <button class="shuffle-btn" onclick="shuffleCards()">🔀 Խառնել քարտերը</button>
+            <button class="shuffle-btn" onclick="shuffleCards()">Խառնել քարտերը</button>
+            <button class="review-btn" onclick="toggleReviewMode()">Դիտել բոլոր քարտերը (Ամբողջական)</button>
+            <button class="list-btn" onclick="toggleListMode()">Ցուցակով դիտում</button>
         </div>
-            <button class="review-btn" onclick="toggleReviewMode()">📖 Դիտել բոլոր քարտերը</button>
         
         <div class="progress-bar">
             <div class="progress-fill" id="progressFill"></div>
@@ -439,7 +518,7 @@
             <div class="card-content" id="cardContent">
                 <div class="loading">Բեռնվում է...</div>
             </div>
-            <div class="flip-indicator">👆 Սեղմեք շրջելու համար</div>
+            <div class="flip-indicator">Սեղմեք շրջելու համար</div>
         </div>
         
         <div class="navigation">
@@ -451,6 +530,9 @@
             <button class="btn-secondary" onclick="prevReviewCard()">← Նախորդ քարտ</button>
             <button class="btn-primary" onclick="nextReviewCard()">Հաջորդ քարտ →</button>
         </div>
+
+        <div class="list-view-container" id="listViewContainer">
+            </div>
     </div>
 
     <script>
@@ -643,7 +725,7 @@
             topic: "Անկախություն/Կախվածություն",
             type: "Օրինակներ",
             front: "Օրինակ: Ստուգել e₁=(1,0,0), e₂=(0,1,0), e₃=(0,0,1) համակարգի գծորեն անկախությունը",
-            back: "<div class='example-box'>ae₁ + be₂ + ce₃ = θ<br>a(1,0,0) + b(0,1,0) + c(0,0,1) = (0,0,0)<br>(a,b,c) = (0,0,0)<br><br>Ստացվեց a=b=c=0<br><br><strong>Եզրակացություն:</strong> Համակարգը գծորեն անկախ է։</div>",
+            back: "<div class='example-box'>ae₁ + be₂ + ce₃ = θ<br>a(1,0,0) + b(0,1,0) + c(0,0,1) = (0,0,0)<br>(a,b,c) = (0,0,0)<br><br><strong>Եզրակացություն:</strong> Համակարգը գծորեն անկախ է։</div>",
             page: 193
         },
         {
@@ -1076,15 +1158,36 @@
         let isFlipped = false;
         let filteredCards = [...flashcards];
         let isReviewMode = false;
+        let isListMode = false;
         let reviewCardIndex = 0;
 
         function initApp() {
+          
             updateCard();
             updateStats();
             updateProgressBar();
         }
 
+        function filterCards() {
+      
+            filteredCards = [...flashcards];
+            currentCardIndex = 0;
+            updateCard();
+            updateStats();
+            updateProgressBar();
+            if (isListMode) {
+                renderListView();
+            }
+        }
+
         function updateCard() {
+            const cardContainer = document.querySelector('.card-container');
+            if (isReviewMode || isListMode || filteredCards.length === 0) {
+                 cardContainer.style.display = 'none';
+                 return;
+            }
+            cardContainer.style.display = 'block';
+
             const card = filteredCards[currentCardIndex];
             if (!card) return;
 
@@ -1103,7 +1206,7 @@
         }
 
         function flipCard() {
-            if (isReviewMode) return; // Prevent flipping in review mode
+            if (isReviewMode || isListMode) return; 
             isFlipped = !isFlipped;
             updateCard();
         }
@@ -1124,6 +1227,11 @@
 
         function shuffleCards() {
             isFlipped = false;
+            // Ensure we are not in list mode when shuffling/viewing main card
+            isListMode = false;
+            document.body.classList.remove('list-mode');
+            document.querySelector('.list-btn').textContent = 'Ցուցակով դիտում';
+
             for (let i = filteredCards.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [filteredCards[i], filteredCards[j]] = [filteredCards[j], filteredCards[i]];
@@ -1134,29 +1242,35 @@
         }
 
         function updateStats() {
-            const progress = Math.round(((currentCardIndex + 1) / filteredCards.length) * 100);
+            const progress = filteredCards.length > 0 ? Math.round(((currentCardIndex + 1) / filteredCards.length) * 100) : 0;
             document.getElementById('progress').textContent = `${progress}%`;
         }
 
         function updateProgressBar() {
-            const progress = ((currentCardIndex + 1) / filteredCards.length) * 100;
+            const progress = filteredCards.length > 0 ? ((currentCardIndex + 1) / filteredCards.length) * 100 : 0;
             document.getElementById('progressFill').style.width = `${progress}%`;
             updateStats();
         }
 
         function toggleReviewMode() {
             isReviewMode = !isReviewMode;
+            isListMode = false; 
             reviewCardIndex = 0;
             
             if (isReviewMode) {
                 document.body.classList.add('review-mode');
-                document.querySelector('.review-btn').textContent = '❌ Փակել ցուցադրումը';
+                document.body.classList.remove('list-mode');
+                document.querySelector('.review-btn').textContent = 'Փակել ցուցադրումը';
+                document.querySelector('.list-btn').textContent = 'Ցուցակով դիտում';
                 showReviewCard();
             } else {
                 document.body.classList.remove('review-mode');
-                document.querySelector('.review-btn').textContent = '📖 Դիտել բոլոր քարտերը';
+                document.querySelector('.review-btn').textContent = 'Դիտել բոլոր քարտերը (Ամբողջական)';
                 updateCard();
             }
+            
+            document.querySelector('.card-container').style.display = isReviewMode || isListMode ? 'none' : 'block';
+            document.getElementById('listViewContainer').style.display = isListMode ? 'block' : 'none';
         }
 
         function showReviewCard() {
@@ -1191,12 +1305,49 @@
             }
         }
 
-        function goToReviewCard(index) {
-            reviewCardIndex = index;
-            showReviewCard();
+        function toggleListMode() {
+            isListMode = !isListMode;
+            isReviewMode = false; 
+
+            if (isListMode) {
+                document.body.classList.add('list-mode');
+                document.body.classList.remove('review-mode');
+                document.querySelector('.list-btn').textContent = 'Փակել ցուցակը';
+                document.querySelector('.review-btn').textContent = 'Դիտել բոլոր քարտերը (Ամբողջական)';
+                renderListView();
+            } else {
+                document.body.classList.remove('list-mode');
+                document.querySelector('.list-btn').textContent = 'Ցուցակով դիտում';
+                updateCard();
+            }
+            document.querySelector('.card-container').style.display = isReviewMode || isListMode ? 'none' : 'block';
+            document.getElementById('listViewContainer').style.display = isListMode ? 'block' : 'none';
         }
 
-        // Initialize the app when page loads
+        function renderListView() {
+            const container = document.getElementById('listViewContainer');
+            container.innerHTML = ''; 
+
+            if (filteredCards.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 50px;">Ֆիլտրերին բավարարող քարտեր չկան։</div>';
+                return;
+            }
+
+            filteredCards.forEach((card, index) => {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'list-card';
+                cardElement.innerHTML = `
+                    <div class="list-card-header">
+                        <span>${index + 1}. ${card.topic} - ${card.type}</span>
+                        <span class="list-card-type">Էջ ${card.page}</span>
+                    </div>
+                    <div class="list-card-front">${card.front}</div>
+                    <div class="list-card-back">${card.back}</div>
+                `;
+                container.appendChild(cardElement);
+            });
+        }
+
         window.addEventListener('load', initApp);
     </script>
 </body>
