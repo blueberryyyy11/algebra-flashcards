@@ -1260,12 +1260,12 @@
             if (isReviewMode) {
                 document.body.classList.add('review-mode');
                 document.body.classList.remove('list-mode');
-                document.querySelector('.review-btn').textContent = 'Դիտել բոլոր քարտերը (Ամբողջական)';
+                document.querySelector('.review-btn').textContent = 'Փակել ցուցադրումը';
                 document.querySelector('.list-btn').textContent = 'Ցուցակով դիտում';
                 showReviewCard();
             } else {
                 document.body.classList.remove('review-mode');
-                document.querySelector('.review-btn').textContent = 'Փակել ցուցադրումը';
+                document.querySelector('.review-btn').textContent = 'Դիտել բոլոր քարտերը (Ամբողջական)';
                 updateCard();
             }
             
